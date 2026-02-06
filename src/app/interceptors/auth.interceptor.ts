@@ -1,7 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-    console.log('Interceptando petición:', req.url);
 
     // Extraer token directamente para evitar circularidad con AuthService
     const name = 'auth_token=';
@@ -19,7 +18,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     }
 
     if (token) {
-        console.log('Token encontrado en interceptor, añadiendo');
         const cloned = req.clone({
             setHeaders: {
                 Authorization: `Bearer ${token}`
@@ -27,7 +25,5 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         });
         return next(cloned);
     }
-
-    console.log('Token NO encontrado en interceptor');
     return next(req);
 };
