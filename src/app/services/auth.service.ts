@@ -24,19 +24,33 @@ export class AuthService {
 
     register(data: any): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
-            tap(response => this.setToken(response.token))
+            tap(response => {
+                this.setToken(response.token);
+                this.setUser(response.user);
+            })
         );
     }
 
     login(data: any): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data).pipe(
-            tap(response => this.setToken(response.token))
+            tap(response => {
+                this.setToken(response.token);
+                this.setUser(response.user);
+            })
         );
     }
 
     private setToken(token: string): void {
-        // Save token in cookie
         document.cookie = `auth_token=${token}; path=/; max-age=86400; SameSite=Strict`;
+    }
+
+    private setUser(user: User): void {
+        localStorage.setItem('user', JSON.stringify(user));
+    }
+
+    getUser(): User | null {
+        const user = localStorage.getItem('user');
+        return user ? JSON.parse(user) : null;
     }
 
     getToken(): string | null {
@@ -57,6 +71,7 @@ export class AuthService {
 
     logout(): void {
         document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Strict';
+        localStorage.removeItem('user');
     }
 
     isLoggedIn(): boolean {

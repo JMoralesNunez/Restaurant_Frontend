@@ -1,0 +1,61 @@
+<div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl font-bold text-slate-900 mb-6">Mis Órdenes</h2>
+
+    @if (isLoading()) {
+    <div class="flex justify-center py-12">
+        <svg class="animate-spin h-8 w-8 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+        </svg>
+    </div>
+    } @else {
+    @if (orders().length === 0) {
+    <div class="text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-300 mb-4" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+        <p class="text-slate-500">Aún no has realizado ninguna orden.</p>
+        <a routerLink="/menu" class="mt-4 inline-block text-green-600 font-medium hover:text-green-700">Ver el menú</a>
+    </div>
+    } @else {
+    <div class="space-y-6">
+        @for (order of orders(); track order.id) {
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-50 flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Orden #{{order.id}}</p>
+                    <p class="text-sm text-slate-500">{{order.createdAt | date:'medium'}}</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span [class]="getStatusClass(order.status || '')"
+                        class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                        {{order.status}}
+                    </span>
+                    <span class="text-xl font-bold text-slate-900">${{order.total | number:'1.2-2'}}</span>
+                </div>
+            </div>
+
+            <div class="p-6 bg-slate-50/50">
+                <h4 class="text-sm font-semibold text-slate-700 mb-3">Resumen de productos</h4>
+                <ul class="space-y-2">
+                    @for (item of order.items; track item.id || item.productId) {
+                    <li class="flex justify-between text-sm">
+                        <span class="text-slate-600">
+                            <span class="font-bold">{{item.quantity}}x</span> {{item.productName}}
+                        </span>
+                        <span class="text-slate-900 font-medium">${{item.subtotal | number:'1.2-2'}}</span>
+                    </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        }
+    </div>
+    }
+    }
+</div>
