@@ -37,6 +37,13 @@
                         {{order.status}}
                     </span>
                     <span class="text-xl font-bold text-slate-900">${{order.total | number:'1.2-2'}}</span>
+
+                    @if (order.status === 'PENDING') {
+                    <button (click)="cancelOrder(order.id)"
+                        class="ml-2 text-xs font-bold text-red-500 hover:text-red-700 transition-colors uppercase tracking-wider">
+                        Cancelar
+                    </button>
+                    }
                 </div>
             </div>
 

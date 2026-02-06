@@ -35,4 +35,8 @@ export class OrderService {
     createOrder(order: { items: { productId: number; quantity: number }[] }): Observable<Order> {
         return this.http.post<Order>(this.apiUrl, order);
     }
+
+    cancelOrder(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    }
 }

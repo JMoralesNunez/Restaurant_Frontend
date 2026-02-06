@@ -39,4 +39,21 @@ export class OrdersComponent implements OnInit {
             default: return 'bg-slate-100 text-slate-700';
         }
     }
+
+    cancelOrder(id: number | undefined) {
+        if (!id) return;
+
+        if (confirm('¿Estás seguro de que deseas cancelar esta orden?')) {
+            this.orderService.cancelOrder(id).subscribe({
+                next: () => {
+                    // Refrescar la lista de órdenes
+                    this.ngOnInit();
+                },
+                error: (err) => {
+                    console.error('Error al cancelar la orden:', err);
+                    alert('No se pudo cancelar la orden. Por favor, intenta de nuevo.');
+                }
+            });
+        }
+    }
 }
