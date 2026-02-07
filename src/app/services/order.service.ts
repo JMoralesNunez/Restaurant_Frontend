@@ -8,6 +8,7 @@ export interface OrderItem {
     productName?: string;
     quantity: number;
     price?: number;
+    comment?: string;
     subtotal?: number;
 }
 
@@ -32,7 +33,7 @@ export class OrderService {
         return this.http.get<Order[]>(this.apiUrl);
     }
 
-    createOrder(order: { items: { productId: number; quantity: number }[] }): Observable<Order> {
+    createOrder(order: { items: { productId: number; quantity: number; comment?: string }[] }): Observable<Order> {
         return this.http.post<Order>(this.apiUrl, order);
     }
 

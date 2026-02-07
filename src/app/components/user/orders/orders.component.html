@@ -52,8 +52,11 @@
                 <ul class="space-y-2">
                     @for (item of order.items; track item.id || item.productId) {
                     <li class="flex justify-between text-sm">
-                        <span class="text-slate-600">
-                            <span class="font-bold">{{item.quantity}}x</span> {{item.productName}}
+                        <span class="text-slate-600 flex flex-col">
+                            <span><span class="font-bold">{{item.quantity}}x</span> {{item.productName}}</span>
+                            @if (item.comment) {
+                            <span class="text-[11px] text-slate-400 italic mt-0.5 ml-5">"{{item.comment}}"</span>
+                            }
                         </span>
                         <span class="text-slate-900 font-medium">${{item.subtotal | number:'1.2-2'}}</span>
                     </li>

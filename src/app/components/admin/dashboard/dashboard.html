@@ -117,7 +117,7 @@
 
                 <div class="space-y-6 mb-10">
                     <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center">
-                        <span class="mr-2">📝</span> Productos comprados
+                        <span class="mr-2"></span> Productos comprados
                     </h3>
                     @if (order.items && order.items.length > 0) {
                     <div class="space-y-4">
@@ -131,6 +131,12 @@
                                 <div>
                                     <p class="text-sm font-bold text-slate-800 tracking-tight leading-tight">
                                         {{item.productName}}</p>
+                                    @if (item.comment) {
+                                    <p
+                                        class="text-[11px] text-brand-primary font-bold italic mt-0.5 border-l-2 border-brand-primary/30 pl-2">
+                                        "{{item.comment}}"
+                                    </p>
+                                    }
                                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">
                                         ${{item.price | number:'1.2-2'}} c/u</p>
                                 </div>

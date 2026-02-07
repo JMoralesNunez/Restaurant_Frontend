@@ -4,10 +4,12 @@ import { ProductService, Product, ProductCategory } from '../../../services/prod
 import { OrderService, OrderItem } from '../../../services/order.service';
 import { Router } from '@angular/router';
 
+import { FormsModule } from '@angular/forms';
+
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, DecimalPipe],
+    imports: [CommonModule, DecimalPipe, FormsModule],
     templateUrl: './menu.component.html'
 })
 export class MenuComponent implements OnInit {
@@ -111,6 +113,12 @@ export class MenuComponent implements OnInit {
         this.cart.set(currentCart.filter((_, i) => i !== index));
     }
 
+    updateComment(index: number, comment: string) {
+        const currentCart = [...this.cart()];
+        currentCart[index] = { ...currentCart[index], comment };
+        this.cart.set(currentCart);
+    }
+
     confirmOrder() {
         if (this.cart().length === 0) return;
 
@@ -118,7 +126,8 @@ export class MenuComponent implements OnInit {
         const orderData = {
             items: this.cart().map(item => ({
                 productId: item.productId,
-                quantity: item.quantity
+                quantity: item.quantity,
+                comment: item.comment
             }))
         };
 
