@@ -5,11 +5,27 @@
             <p class="mt-2 text-sm text-slate-700">Gestiona el catálogo de productos del restaurante.</p>
         </div>
         <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-            <button (click)="router.navigate(['/admin/products/new'])"
-                class="inline-flex items-center justify-center rounded-md border border-transparent bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 sm:w-auto">
+            <button (click)="openModal()"
+                class="inline-flex items-center justify-center rounded-2xl border border-transparent bg-slate-900 px-6 py-2.5 text-sm font-bold text-white shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all active:scale-95 sm:w-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
                 Nuevo Producto
             </button>
         </div>
+    </div>
+
+    <!-- Filtros de Categoría -->
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+        @for (cat of categories; track cat.id) {
+        <button (click)="setCategory(cat.id)" [class]="selectedCategory() === cat.id 
+                ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/10 scale-105 ring-4 ring-slate-900/5' 
+                : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-100 hover:border-slate-300'"
+            class="px-6 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all duration-300 transform active:scale-95">
+            {{cat.name}}
+        </button>
+        }
     </div>
 
     @if (isLoading()) {
@@ -24,7 +40,7 @@
     </div>
     } @else {
     <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        @for (product of products(); track product.id) {
+        @for (product of filteredProducts(); track product.id) {
         <div
             class="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col">
             <!-- Product Image -->
@@ -61,22 +77,22 @@
                 <p class="text-slate-500 text-sm mb-4 line-clamp-2" [title]="product.description">
                     {{product.description}}</p>
 
-                <div class="flex gap-2 mt-auto pt-4 border-t border-slate-100">
-                    <button (click)="editProduct(product.id)"
-                        class="flex-1 bg-amber-50 text-amber-700 hover:bg-amber-100 px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                <div class="flex gap-2 mt-auto pt-4 border-t border-slate-50">
+                    <button (click)="openModal(product)"
+                        class="flex-1 bg-slate-50 text-slate-700 hover:bg-slate-200 px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                         </svg>
                         Editar
                     </button>
                     <button (click)="deleteProduct(product.id)"
-                        class="flex-1 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2">
+                        class="flex-1 bg-red-50 text-red-600 hover:bg-red-100 px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m14.74 9-.34 12m-4.72 0-.34-12M4.5 6.346l1.106 14.506a2.25 2.25 0 0 0 2.244 2.077h8.299a2.25 2.25 0 0 0 2.244-2.077L19.5 6.346m-15 0h15M9 6.346V4.5A2.25 2.25 0 0 1 11.25 2.25h1.5A2.25 2.25 0 0 1 15 4.5v1.846M12 12v3m0 3h.008V18H12v-3Z" />
                         </svg>
                         Eliminar
                     </button>
@@ -87,24 +103,168 @@
     </div>
     }
 
-    @if (!isLoading() && products().length === 0) {
-    <div class="text-center py-12">
-        <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-        </svg>
-        <h3 class="mt-2 text-sm font-medium text-slate-900">No hay productos</h3>
-        <p class="mt-1 text-sm text-slate-500">Comienza creando un nuevo producto para tu menú.</p>
-        <div class="mt-6">
-            <button (click)="router.navigate(['/admin/products/new'])"
-                class="inline-flex items-center rounded-md border border-transparent bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2">
-                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                    fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                        clip-rule="evenodd" />
-                </svg>
-                Nuevo Producto
+    <!-- Modal para Crear/Editar Producto -->
+    @if (showModal()) {
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Overlay -->
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div (click)="closeModal()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
+                aria-hidden="true"></div>
+
+            <!-- Modal Content -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div
+                class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full animate-fadeInUp">
+                <div class="relative bg-white p-8 sm:p-10">
+                    <!-- Close Button -->
+                    <button (click)="closeModal()"
+                        class="absolute top-8 right-8 text-slate-400 hover:text-slate-600 transition-colors p-2 rounded-xl hover:bg-slate-100">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <h2 class="text-3xl font-black text-slate-900 tracking-tighter mb-2">
+                        {{ isEditMode() ? 'Editar Producto' : 'Nuevo Producto' }}
+                    </h2>
+                    <p class="text-slate-500 font-medium mb-10">Completa los detalles para actualizar tu menú.</p>
+
+                    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-8">
+                        <!-- Image Upload Area -->
+                        <div class="space-y-3">
+                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Imagen del
+                                Producto</label>
+                            <div class="relative group cursor-pointer" (click)="triggerImageUpload()">
+                                <input type="file" id="productImage" (change)="onFileSelected($event)" class="hidden"
+                                    accept="image/*">
+                                @if (imagePreview()) {
+                                <div
+                                    class="w-full h-56 rounded-3xl overflow-hidden border-4 border-slate-50 shadow-inner group-hover:border-slate-100 transition-all">
+                                    <img [src]="imagePreview()" class="w-full h-full object-cover">
+                                    <div
+                                        class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                                        <span
+                                            class="text-white font-bold text-sm bg-white/20 backdrop-blur px-4 py-2 rounded-xl">Cambiar
+                                            imagen</span>
+                                    </div>
+                                </div>
+                                } @else {
+                                <div
+                                    class="w-full h-56 border-2 border-dashed border-slate-200 rounded-3xl flex flex-col items-center justify-center bg-slate-50 group-hover:bg-slate-100 group-hover:border-slate-300 transition-all">
+                                    <div class="p-4 rounded-2xl bg-white shadow-sm mb-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-400"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-slate-500 font-bold text-sm">Haz clic para subir imagen</p>
+                                    <p class="text-slate-400 text-xs mt-1">PNG, JPG hasta 5MB</p>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Name -->
+                            <div class="space-y-3">
+                                <label
+                                    class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Nombre</label>
+                                <input type="text" formControlName="name"
+                                    class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-900 focus:bg-white focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/10 transition-all outline-none"
+                                    placeholder="Ej. Burguer Suprema">
+                            </div>
+
+                            <!-- Category Selection -->
+                            <div class="space-y-3">
+                                <label
+                                    class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Categoría</label>
+                                <select formControlName="category"
+                                    class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-900 focus:bg-white focus:border-brand-primary transition-all outline-none appearance-none cursor-pointer">
+                                    <option [value]="ProductCategory.Food">Platos</option>
+                                    <option [value]="ProductCategory.Drink">Bebidas</option>
+                                    <option [value]="ProductCategory.Dessert">Postres</option>
+                                </select>
+                            </div>
+
+                            <!-- Price -->
+                            <div class="space-y-3">
+                                <label class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Precio
+                                    ($)</label>
+                                <input type="number" formControlName="price"
+                                    class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-900 focus:bg-white focus:border-brand-primary outline-none transition-all">
+                            </div>
+
+                            <!-- Stock -->
+                            <div class="space-y-3">
+                                <label class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Stock
+                                    Inicial</label>
+                                <input type="number" formControlName="stock"
+                                    class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-900 focus:bg-white focus:border-brand-primary outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="space-y-3">
+                            <label
+                                class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Descripción</label>
+                            <textarea formControlName="description" rows="3"
+                                class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-900 focus:bg-white focus:border-brand-primary transition-all outline-none resize-none"
+                                placeholder="Describe el plato..."></textarea>
+                        </div>
+
+                        <!-- Is Active -->
+                        <div class="flex items-center space-x-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" formControlName="isActive" class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary">
+                                </div>
+                            </label>
+                            <span class="text-sm font-bold text-slate-700">Producto activo y visible</span>
+                        </div>
+
+                        <!-- Modal Actions -->
+                        <div class="flex gap-4 pt-6">
+                            <button type="button" (click)="closeModal()"
+                                class="flex-1 bg-white hover:bg-slate-50 text-slate-500 font-black py-4 rounded-2xl border-2 border-slate-100 transition-all active:scale-95 uppercase tracking-widest text-xs">
+                                Cancelar
+                            </button>
+                            <button type="submit" [disabled]="isSubmitting() || form.invalid"
+                                class="flex-[2] bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-black py-4 rounded-2xl shadow-xl shadow-slate-900/20 transition-all active:scale-95 uppercase tracking-widest text-xs flex items-center justify-center space-x-3">
+                                @if (!isSubmitting()) {
+                                <span>{{ isEditMode() ? 'Actualizar Producto' : 'Guardar Producto' }}</span>
+                                } @else {
+                                <div
+                                    class="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin">
+                                </div>
+                                }
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+
+    @if (!isLoading() && filteredProducts().length === 0) {
+    <div
+        class="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-slate-100 mt-12 max-w-4xl mx-auto">
+        <div class="h-24 w-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="h-10 w-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+        </div>
+        <h3 class="text-xl font-black text-slate-900 tracking-tight">No se encontraron productos</h3>
+        <p class="mt-2 text-slate-500 max-w-xs mx-auto font-medium">No hay items en esta categoría. Puedes intentar
+            cambiar el filtro o añadir uno nuevo.</p>
+        <div class="mt-10">
+            <button (click)="openModal()"
+                class="inline-flex items-center rounded-2xl bg-slate-900 px-8 py-4 text-sm font-black text-white shadow-2xl shadow-slate-900/40 hover:bg-slate-800 transition-all active:scale-95 uppercase tracking-widest">
+                Añadir Primer Producto
             </button>
         </div>
     </div>
