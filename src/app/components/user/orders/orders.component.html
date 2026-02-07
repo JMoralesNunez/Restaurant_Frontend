@@ -1,5 +1,5 @@
 <div class="max-w-4xl mx-auto">
-    <h2 class="text-2xl font-bold text-slate-900 mb-6">Mis Órdenes</h2>
+    <h2 class="text-4xl font-black text-slate-900 tracking-tighter mb-2">Mis Órdenes</h2>
 
     @if (isLoading()) {
     <div class="flex justify-center py-12">
@@ -32,13 +32,13 @@
                     <p class="text-sm text-slate-500">{{order.createdAt | date:'medium'}}</p>
                 </div>
                 <div class="flex items-center gap-4">
-                    <span [class]="getStatusClass(order.status || '')"
+                    <span [class]="getStatusClass(order.status)"
                         class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                        {{order.status}}
+                        {{getStatusLabel(order.status)}}
                     </span>
                     <span class="text-xl font-bold text-slate-900">${{order.total | number:'1.2-2'}}</span>
 
-                    @if (order.status === 'PENDING') {
+                    @if (isPending(order.status)) {
                     <button (click)="cancelOrder(order.id)"
                         class="ml-2 text-xs font-bold text-red-500 hover:text-red-700 transition-colors uppercase tracking-wider">
                         Cancelar

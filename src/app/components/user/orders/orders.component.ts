@@ -31,13 +31,46 @@ export class OrdersComponent implements OnInit {
         });
     }
 
-    getStatusClass(status: string): string {
-        switch (status.toUpperCase()) {
-            case 'PENDING': return 'bg-yellow-100 text-yellow-700';
-            case 'COMPLETED': return 'bg-green-100 text-green-700';
-            case 'CANCELLED': return 'bg-red-100 text-red-700';
-            default: return 'bg-slate-100 text-slate-700';
+    getStatusClass(status: string | number | undefined): string {
+        const s = status?.toString().toUpperCase() || '';
+        switch (s) {
+            case 'PENDING':
+            case '0':
+                return 'bg-yellow-100 text-yellow-700';
+            case 'PREPARING':
+            case '1':
+                return 'bg-blue-100 text-blue-700';
+            case 'DELIVERED':
+            case '2':
+            case 'COMPLETED':
+                return 'bg-green-100 text-green-700';
+            case 'CANCELLED':
+            case '3':
+                return 'bg-red-100 text-red-700';
+            default:
+                return 'bg-slate-100 text-slate-700';
         }
+    }
+
+    getStatusLabel(status: string | number | undefined): string {
+        const s = status?.toString().toUpperCase() || '';
+        switch (s) {
+            case '0':
+            case 'PENDING': return 'Pendiente';
+            case '1':
+            case 'PREPARING': return 'En Preparación';
+            case '2':
+            case 'DELIVERED':
+            case 'COMPLETED': return 'Entregado';
+            case '3':
+            case 'CANCELLED': return 'Cancelado';
+            default: return s || 'Desconocido';
+        }
+    }
+
+    isPending(status: string | number | undefined): boolean {
+        const s = status?.toString().toUpperCase() || '';
+        return s === 'PENDING' || s === '0';
     }
 
     cancelOrder(id: number | undefined) {
