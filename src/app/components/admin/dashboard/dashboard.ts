@@ -1,6 +1,8 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 import { OrderService, Order } from '../../../services/order.service';
+import { SignalrService } from '../../../services/signalr.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,8 +11,10 @@ import { OrderService, Order } from '../../../services/order.service';
   templateUrl: './dashboard.html',
   styles: ``
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   private orderService = inject(OrderService);
+  private signalrService = inject(SignalrService);
+  private destroy$ = new Subject<void>();
 
   stats = signal([
     { title: 'Pedidos Totales', value: '0', icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', color: 'text-green-600', bg: 'bg-green-100' },
@@ -26,6 +30,20 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadDashboardData();
+
+    // Escuchar alertas de tiempo real
+    this.signalrService.newOrderReceived$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.loadDashboardData(false));
+
+    this.signalrService.dashboardUpdated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.loadDashboardData(false));
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   setRevenueFilter(filter: 'day' | 'week' | 'month') {
@@ -34,7 +52,8 @@ export class DashboardComponent implements OnInit {
     this.orderService.getOrders().subscribe(orders => this.calculateStats(orders));
   }
 
-  loadDashboardData() {
+  loadDashboardData(showSpinner: boolean = true) {
+    if (showSpinner) this.isLoading.set(true);
     this.orderService.getOrders().subscribe({
       next: (orders) => {
         this.calculateStats(orders);

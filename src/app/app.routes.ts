@@ -1,44 +1,50 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/auth/login/login.component';
-import { RegisterComponent } from './components/auth/register/register.component';
-import { UserLayoutComponent } from './components/user/user-layout/user-layout.component';
 import { authGuard } from './guards/auth.guard';
-import { MenuComponent } from './components/user/menu/menu.component';
-import { OrdersComponent } from './components/user/orders/orders.component';
-import { AdminLayoutComponent } from './components/admin/admin-layout/admin-layout';
-import { DashboardComponent } from './components/admin/dashboard/dashboard';
-import { ProductListComponent } from './components/admin/products/product-list/product-list';
-import { ProductFormComponent } from './components/admin/products/product-form/product-form';
-import { UserListComponent } from './components/admin/users/user-list/user-list';
-import { UserFormComponent } from './components/admin/users/user-form/user-form';
 
 export const routes: Routes = [
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent },
+    {
+        path: 'login',
+        loadComponent: () => import('./components/auth/login/login.component').then(m => m.LoginComponent)
+    },
+    {
+        path: 'register',
+        loadComponent: () => import('./components/auth/register/register.component').then(m => m.RegisterComponent)
+    },
     {
         path: '',
-        component: UserLayoutComponent,
+        loadComponent: () => import('./components/user/user-layout/user-layout.component').then(m => m.UserLayoutComponent),
         canActivate: [authGuard],
         data: { role: 'USER' },
         children: [
-            { path: 'menu', component: MenuComponent },
-            { path: 'orders', component: OrdersComponent },
+            {
+                path: 'menu',
+                loadComponent: () => import('./components/user/menu/menu.component').then(m => m.MenuComponent)
+            },
+            {
+                path: 'orders',
+                loadComponent: () => import('./components/user/orders/orders.component').then(m => m.OrdersComponent)
+            },
             { path: '', redirectTo: 'menu', pathMatch: 'full' }
         ]
     },
     {
         path: 'admin',
-        component: AdminLayoutComponent,
+        loadComponent: () => import('./components/admin/admin-layout/admin-layout').then(m => m.AdminLayoutComponent),
         canActivate: [authGuard],
         data: { role: 'ADMIN' },
         children: [
-            { path: 'dashboard', component: DashboardComponent },
-            { path: 'products', component: ProductListComponent },
-            { path: 'products/new', component: ProductFormComponent },
-            { path: 'products/edit/:id', component: ProductFormComponent },
-            { path: 'users', component: UserListComponent },
-            { path: 'users/new', component: UserFormComponent },
-            { path: 'users/edit/:id', component: UserFormComponent },
+            {
+                path: 'dashboard',
+                loadComponent: () => import('./components/admin/dashboard/dashboard').then(m => m.DashboardComponent)
+            },
+            {
+                path: 'products',
+                loadComponent: () => import('./components/admin/products/product-list/product-list').then(m => m.ProductListComponent)
+            },
+            {
+                path: 'users',
+                loadComponent: () => import('./components/admin/users/user-list/user-list').then(m => m.UserListComponent)
+            },
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
         ]
     }

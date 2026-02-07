@@ -1,7 +1,9 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { OrderService, Order } from '../../../services/order.service';
 import { RouterLink } from '@angular/router';
+import { SignalrService } from '../../../services/signalr.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-orders',
@@ -9,13 +11,33 @@ import { RouterLink } from '@angular/router';
     imports: [CommonModule, RouterLink, DatePipe, DecimalPipe],
     templateUrl: './orders.component.html'
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent implements OnInit, OnDestroy {
     private orderService = inject(OrderService);
+    private signalrService = inject(SignalrService);
+    private destroy$ = new Subject<void>();
 
     orders = signal<Order[]>([]);
     isLoading = signal<boolean>(true);
 
     ngOnInit() {
+        this.loadOrders();
+
+        // Escuchar cambios de estado en tiempo real vía SignalR
+        this.signalrService.orderStatusChanged$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.loadOrders(false);
+            });
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
+    }
+
+    loadOrders(showSpinner: boolean = true) {
+        if (showSpinner) this.isLoading.set(true);
+
         this.orderService.getOrders().subscribe({
             next: (data) => {
                 const sortedOrders = data.sort((a, b) => {
