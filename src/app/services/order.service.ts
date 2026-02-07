@@ -15,7 +15,7 @@ export interface Order {
     id?: number;
     userId?: number;
     userName?: string;
-    status?: string;
+    status?: string | number;
     total?: number;
     createdAt?: string;
     items: OrderItem[];
@@ -38,5 +38,9 @@ export class OrderService {
 
     cancelOrder(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    }
+
+    updateOrderStatus(id: number, status: number): Observable<Order> {
+        return this.http.patch<Order>(`${this.apiUrl}/${id}/status`, { status });
     }
 }

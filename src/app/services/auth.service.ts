@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
@@ -22,10 +22,20 @@ export class AuthService {
     private http = inject(HttpClient);
     private apiUrl = 'http://localhost:5269/api/Auth';
 
+    // Reactive user state
+    public currentUser = signal<User | null>(this.getUserFromStorage());
+
+    constructor() {
+        // Initialize state
+    }
+
     register(data: any): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
             tap(response => {
                 this.setToken(response.token);
+                if (typeof response.user.role === 'number') {
+                    (response.user as any).role = response.user.role === 1 ? 'ADMIN' : 'USER';
+                }
                 this.setUser(response.user);
             })
         );
@@ -35,6 +45,9 @@ export class AuthService {
         return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data).pipe(
             tap(response => {
                 this.setToken(response.token);
+                if (typeof response.user.role === 'number') {
+                    (response.user as any).role = response.user.role === 1 ? 'ADMIN' : 'USER';
+                }
                 this.setUser(response.user);
             })
         );
@@ -46,11 +59,19 @@ export class AuthService {
 
     private setUser(user: User): void {
         localStorage.setItem('user', JSON.stringify(user));
+        this.currentUser.set(user);
     }
 
-    getUser(): User | null {
-        const user = localStorage.getItem('user');
-        return user ? JSON.parse(user) : null;
+    private getUserFromStorage(): User | null {
+        const userStr = localStorage.getItem('user');
+        if (!userStr) return null;
+        const user = JSON.parse(userStr);
+        if (typeof user.role === 'number') {
+            user.role = user.role === 1 ? 'ADMIN' : 'USER';
+            // Update storage with corrected role
+            localStorage.setItem('user', JSON.stringify(user));
+        }
+        return user;
     }
 
     getToken(): string | null {
@@ -72,9 +93,30 @@ export class AuthService {
     logout(): void {
         document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Strict';
         localStorage.removeItem('user');
+        this.currentUser.set(null);
     }
 
     isLoggedIn(): boolean {
         return !!this.getToken();
+    }
+
+    getUsers(): Observable<User[]> {
+        return this.http.get<User[]>(`${this.apiUrl}/users`).pipe(
+            tap(users => {
+                users.forEach(user => {
+                    if (typeof user.role === 'number') {
+                        (user as any).role = user.role === 1 ? 'ADMIN' : 'USER';
+                    }
+                });
+            })
+        );
+    }
+
+    updateUser(id: number, data: any): Observable<User> {
+        return this.http.put<User>(`${this.apiUrl}/users/${id}`, data);
+    }
+
+    deleteUser(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/users/${id}`);
     }
 }

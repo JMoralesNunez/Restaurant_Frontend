@@ -13,6 +13,8 @@ export class UserLayoutComponent {
     private authService = inject(AuthService);
     private router = inject(Router);
 
+    user = this.authService.currentUser;
+
     logout() {
         this.authService.logout();
         this.router.navigate(['/login']);

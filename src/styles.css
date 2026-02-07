@@ -1,2 +1,93 @@
-/* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+@theme {
+    --color-brand-primary: #059669;
+    --color-brand-primary-hover: #047857;
+    --color-brand-secondary: #f59e0b;
+    --color-brand-bg: #f8fafc;
+    --color-brand-surface: #ffffff;
+
+    --radius-brand: 1.25rem;
+    --radius-brand-lg: 2rem;
+    --radius-brand-xl: 3rem;
+}
+
+@layer base {
+    body {
+        @apply bg-brand-bg text-slate-900 font-sans antialiased;
+    }
+}
+
+@layer components {
+
+    /* Premium Buttons */
+    .btn-primary {
+        @apply bg-brand-primary hover:bg-brand-primary-hover text-white px-8 py-4 rounded-3xl font-black tracking-tight transition-all duration-300 active:scale-95 shadow-xl hover:shadow-brand-primary/40 disabled:opacity-50 flex items-center justify-center space-x-2;
+    }
+
+    /* Premium Cards */
+    .card-premium {
+        @apply bg-brand-surface rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500;
+    }
+
+    /* Sidebar Navigation Items */
+    .admin-nav-item {
+        @apply text-slate-500 hover:bg-slate-50 hover:text-brand-primary transition-all duration-300;
+    }
+
+    .nav-icon-box {
+        @apply bg-slate-50 text-slate-400 group-hover:bg-white group-hover:text-brand-primary transition-all duration-300;
+    }
+
+    /* Active State for Sidebar */
+    .admin-active {
+        @apply !bg-brand-primary !text-white !shadow-2xl !shadow-brand-primary/30;
+    }
+
+    .admin-active .nav-icon-box {
+        @apply !bg-white !text-brand-primary !shadow-sm;
+    }
+
+    /* Input Styling */
+    .input-premium {
+        @apply rounded-2xl border-2 border-slate-100 focus:ring-4 focus:ring-brand-primary/10 focus:border-brand-primary transition-all p-4 outline-none;
+    }
+}
+
+/* Custom transitions and scrollbars */
+.fade-in {
+    animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
