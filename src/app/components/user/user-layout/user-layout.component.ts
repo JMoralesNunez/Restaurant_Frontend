@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { NgxThemeToggleComponent, OmDarkIcon, OmLightIcon, OmLabel } from '@omnedia/ngx-theme-toggle';
 
 @Component({
     selector: 'app-user-layout',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+    imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, NgxThemeToggleComponent, OmDarkIcon, OmLightIcon, OmLabel],
     templateUrl: './user-layout.component.html'
 })
 export class UserLayoutComponent {

@@ -3,6 +3,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { ProductService, Product, ProductCategory } from '../../../services/product.service';
 import { OrderService, OrderItem } from '../../../services/order.service';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 import { FormsModule } from '@angular/forms';
 
@@ -119,8 +120,29 @@ export class MenuComponent implements OnInit {
         this.cart.set(currentCart);
     }
 
-    confirmOrder() {
+    async confirmOrder() {
         if (this.cart().length === 0) return;
+
+        const result = await Swal.fire({
+            title: '¿Confirmar pedido?',
+            text: `Estás a punto de pedir ${this.cart().length} productos por un total de $${this.cartTotal().toFixed(2)}`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, confirmar',
+            cancelButtonText: 'Cancelar',
+            background: '#ffffff',
+            customClass: {
+                popup: 'rounded-2xl shadow-xl border border-gray-100',
+                title: 'text-xl font-bold text-gray-800',
+                htmlContainer: 'text-gray-600',
+                confirmButton: 'px-6 py-2.5 rounded-xl font-medium transition-all duration-200 transform hover:scale-105',
+                cancelButton: 'px-6 py-2.5 rounded-xl font-medium transition-all duration-200 transform hover:scale-105'
+            }
+        });
+
+        if (!result.isConfirmed) return;
 
         this.isSubmitting.set(true);
         const orderData = {
@@ -134,10 +156,28 @@ export class MenuComponent implements OnInit {
         this.orderService.createOrder(orderData).subscribe({
             next: (response) => {
                 this.cart.set([]);
-                this.router.navigate(['/orders']);
+                Swal.fire({
+                    title: '¡Pedido realizado!',
+                    text: 'Tu orden ha sido enviada a la cocina.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: '#ffffff',
+                    customClass: {
+                        popup: 'rounded-2xl shadow-xl'
+                    }
+                }).then(() => {
+                    this.router.navigate(['/orders']);
+                });
             },
             error: (err) => {
                 console.error('Error al confirmar orden', err);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudo procesar tu pedido. Por favor intenta de nuevo.',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6'
+                });
                 this.isSubmitting.set(false);
             },
             complete: () => {

@@ -4,6 +4,7 @@ import { OrderService, Order } from '../../../services/order.service';
 import { RouterLink } from '@angular/router';
 import { SignalrService } from '../../../services/signalr.service';
 import { Subject, takeUntil } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-orders',
@@ -95,18 +96,53 @@ export class OrdersComponent implements OnInit, OnDestroy {
         return s === 'PENDING' || s === '0';
     }
 
-    cancelOrder(id: number | undefined) {
+    async cancelOrder(id: number | undefined) {
         if (!id) return;
 
-        if (confirm('¿Estás seguro de que deseas cancelar esta orden?')) {
+        const result = await Swal.fire({
+            title: '¿Cancelar orden?',
+            text: '¿Estás seguro de que deseas cancelar esta orden? Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, cancelar orden',
+            cancelButtonText: 'No, mantener orden',
+            background: '#ffffff',
+            customClass: {
+                popup: 'rounded-2xl shadow-xl',
+                title: 'text-xl font-bold text-gray-800',
+                htmlContainer: 'text-gray-600',
+                confirmButton: 'px-6 py-2.5 rounded-xl font-medium transition-all duration-200 transform hover:scale-105',
+                cancelButton: 'px-6 py-2.5 rounded-xl font-medium transition-all duration-200 transform hover:scale-105'
+            }
+        });
+
+        if (result.isConfirmed) {
             this.orderService.cancelOrder(id).subscribe({
                 next: () => {
+                    Swal.fire({
+                        title: 'Orden cancelada',
+                        text: 'La orden ha sido cancelada exitosamente.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        background: '#ffffff',
+                        customClass: {
+                            popup: 'rounded-2xl shadow-xl'
+                        }
+                    });
                     // Refrescar la lista de órdenes
-                    this.ngOnInit();
+                    this.loadOrders(false);
                 },
                 error: (err) => {
                     console.error('Error al cancelar la orden:', err);
-                    alert('No se pudo cancelar la orden. Por favor, intenta de nuevo.');
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se pudo cancelar la orden. Por favor, intenta de nuevo.',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6'
+                    });
                 }
             });
         }
