@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { environment } from '../../environments/environment';
+
 export interface OrderItem {
     id?: number;
     productId: number;
@@ -27,7 +29,7 @@ export interface Order {
 })
 export class OrderService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:5269/api/Orders';
+    private apiUrl = `${environment.apiUrl}/Orders`;
 
     getOrders(): Observable<Order[]> {
         return this.http.get<Order[]>(this.apiUrl);

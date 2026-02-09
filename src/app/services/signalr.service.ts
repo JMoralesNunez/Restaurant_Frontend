@@ -3,6 +3,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import * as signalR from '@microsoft/signalr';
 import { Subject } from 'rxjs';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -35,7 +36,7 @@ export class SignalrService {
 
         console.log('Starting SignalR connection...');
         this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl('http://localhost:5269/hubs/order', {
+            .withUrl(environment.hubUrl, {
                 accessTokenFactory: () => this.authService.getToken() || '',
                 // Permitir negociación automática para mejor compatibilidad
                 // skipNegotiation: true, 

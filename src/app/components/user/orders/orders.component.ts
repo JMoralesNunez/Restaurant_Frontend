@@ -26,8 +26,19 @@ export class OrdersComponent implements OnInit, OnDestroy {
         // Escuchar cambios de estado en tiempo real vía SignalR
         this.signalrService.orderStatusChanged$
             .pipe(takeUntil(this.destroy$))
-            .subscribe(() => {
-                this.loadOrders(false);
+            .subscribe((data) => {
+                console.log('Actualizando orden recibida:', data);
+                // Actualizar localmente para inmediatez
+                this.orders.update(currentOrders =>
+                    currentOrders.map(order => {
+                        if (order.id === data.orderId) {
+                            return { ...order, status: data.status };
+                        }
+                        return order;
+                    })
+                );
+                // Recargar para consistencia completa
+                // this.loadOrders(false); 
             });
     }
 

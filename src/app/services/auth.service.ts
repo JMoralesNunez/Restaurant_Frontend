@@ -2,6 +2,8 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
+import { environment } from '../../environments/environment';
+
 export interface User {
     id: number;
     name: string;
@@ -20,7 +22,7 @@ export interface AuthResponse {
 })
 export class AuthService {
     private http = inject(HttpClient);
-    private apiUrl = 'http://localhost:5269/api/Auth';
+    private apiUrl = `${environment.apiUrl}/Auth`;
 
     // Reactive user state
     public currentUser = signal<User | null>(this.getUserFromStorage());
