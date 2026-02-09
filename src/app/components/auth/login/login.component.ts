@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -41,6 +42,19 @@ export class LoginComponent {
         error: (err) => {
           console.error('Error al iniciar sesión', err);
           this.isLoading = false;
+
+          let errorMessage = 'Hubo un problema al iniciar sesión. Por favor, intenta de nuevo.';
+          if (err.status === 401) {
+            errorMessage = 'Correo o contraseña incorrectos.';
+            this.loginForm.reset();
+          }
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de autenticación',
+            text: errorMessage,
+            confirmButtonColor: '#3085d6',
+          });
         },
         complete: () => {
           this.isLoading = false;
