@@ -31,39 +31,48 @@ export class SignalrService {
     }
 
     private startConnection(user: any) {
-        if (this.hubConnection) return;
+        if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) return;
 
+        console.log('Starting SignalR connection...');
         this.hubConnection = new signalR.HubConnectionBuilder()
             .withUrl('http://localhost:5269/hubs/order', {
-                skipNegotiation: true,
-                transport: signalR.HttpTransportType.WebSockets
+                accessTokenFactory: () => this.authService.getToken() || '',
+                // Permitir negociación automática para mejor compatibilidad
+                // skipNegotiation: true, 
+                // transport: signalR.HttpTransportType.WebSockets 
             })
             .withAutomaticReconnect()
             .build();
 
-        this.hubConnection.start()
-            .then(() => {
-                console.log('SignalR connected');
-
-                // Unirse a grupos según el rol
-                if (user.role === 'ADMIN') {
-                    this.hubConnection?.invoke('JoinAdminGroup');
-                }
-                this.hubConnection?.invoke('JoinUserGroup', user.id);
-            })
-            .catch(err => console.error('Error starting SignalR connection:', err));
-
+        // Registrar manejadores ANTES de iniciar la conexión
         this.hubConnection.on('OrderStatusChanged', (data) => {
+            console.log('OrderStatusChanged received:', data);
             this.orderStatusChanged$.next(data);
         });
 
         this.hubConnection.on('NewOrderReceived', (data) => {
+            console.log('NewOrderReceived received:', data);
             this.newOrderReceived$.next(data);
         });
 
         this.hubConnection.on('DashboardUpdated', () => {
+            console.log('DashboardUpdated received');
             this.dashboardUpdated$.next();
         });
+
+        this.hubConnection.start()
+            .then(() => {
+                console.log('SignalR connected successfully');
+
+                // Unirse a grupos según el rol
+                if (user.role === 'ADMIN') {
+                    this.hubConnection?.invoke('JoinAdminGroup')
+                        .catch(err => console.error('Error joining admin group:', err));
+                }
+                this.hubConnection?.invoke('JoinUserGroup', user.id)
+                    .catch(err => console.error('Error joining user group:', err));
+            })
+            .catch(err => console.error('Error starting SignalR connection:', err));
     }
 
     private stopConnection() {
