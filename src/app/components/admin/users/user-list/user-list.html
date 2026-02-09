@@ -138,16 +138,16 @@
                                 placeholder="juan@ejemplo.com">
                         </div>
 
+                        @if (!isEditMode()) {
                         <div class="space-y-3">
-                            <label class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Contraseña
-                                {{ isEditMode() ? '(opcional)' : '' }}</label>
+                            <label
+                                class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Contraseña</label>
                             <input type="password" formControlName="password"
                                 class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-900 focus:bg-white focus:border-indigo-500 transition-all outline-none"
                                 placeholder="••••••••">
-                            @if (!isEditMode()) {
                             <p class="text-[10px] text-slate-400 font-medium ml-1">Mínimo 6 caracteres.</p>
-                            }
                         </div>
+                        }
 
                         <div class="space-y-3">
                             <label class="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Rol en el

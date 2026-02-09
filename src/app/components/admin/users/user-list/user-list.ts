@@ -61,11 +61,8 @@ export class UserListComponent implements OnInit {
       this.form.patchValue({
         name: user.name,
         email: user.email,
-        role: user.role,
-        password: ''
+        role: user.role
       });
-      // Password not required for editing
-      this.form.get('password')?.removeValidators(Validators.required);
     } else {
       this.isEditMode.set(false);
       this.editingUserId.set(null);
@@ -75,10 +72,7 @@ export class UserListComponent implements OnInit {
         role: 'USER',
         password: ''
       });
-      // Password required for new user
-      this.form.get('password')?.addValidators(Validators.required);
     }
-    this.form.get('password')?.updateValueAndValidity();
   }
 
   closeModal() {
