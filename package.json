@@ -30,7 +30,6 @@
     "@angular/platform-browser": "^21.1.0",
     "@angular/router": "^21.1.0",
     "@microsoft/signalr": "^10.0.0",
-    "@omnedia/ngx-number-ticker": "^4.0.1",
     "@omnedia/ngx-theme-toggle": "^4.0.1",
     "@tailwindcss/postcss": "^4.1.18",
     "postcss": "^8.5.6",

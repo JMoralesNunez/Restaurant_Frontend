@@ -72,6 +72,9 @@ export class UserListComponent implements OnInit {
         role: 'USER',
         password: ''
       });
+      // Add required validator for password in create mode
+      this.form.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
+      this.form.get('password')?.updateValueAndValidity();
     }
   }
 
@@ -79,6 +82,9 @@ export class UserListComponent implements OnInit {
     this.showModal.set(false);
     this.isSubmitting.set(false);
     this.form.reset();
+    // Reset password validators to initial state (minLength only) after closing
+    this.form.get('password')?.setValidators([Validators.minLength(6)]);
+    this.form.get('password')?.updateValueAndValidity();
   }
 
   onSubmit() {
