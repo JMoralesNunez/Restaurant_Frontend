@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 import { ProductService, Product, ProductCategory } from '../../../../services/product.service';
 
@@ -157,10 +158,22 @@ export class ProductListComponent implements OnInit {
       next: () => {
         this.loadProducts();
         this.closeModal();
+        Swal.fire({
+          icon: 'success',
+          title: this.isEditMode() ? 'Producto actualizado' : 'Producto creado',
+          text: `El producto ha sido ${this.isEditMode() ? 'actualizado' : 'creado'} correctamente`,
+          timer: 2000,
+          showConfirmButton: false
+        });
       },
       error: (err) => {
         console.error('Error saving product', err);
         this.isSubmitting.set(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo guardar el producto'
+        });
       }
     });
   }
@@ -169,13 +182,36 @@ export class ProductListComponent implements OnInit {
     this.openModal(product);
   }
 
-  deleteProduct(id: number) {
-    if (confirm('Are you sure you want to delete this product?')) {
+  async deleteProduct(id: number) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
       this.productService.deleteProduct(id).subscribe({
         next: () => {
           this.products.update(products => products.filter(p => p.id !== id));
+          Swal.fire(
+            'Eliminado',
+            'El producto ha sido eliminado.',
+            'success'
+          );
         },
-        error: (err) => console.error('Error deleting product', err)
+        error: (err) => {
+          console.error('Error deleting product', err);
+          Swal.fire(
+            'Error',
+            'No se pudo eliminar el producto.',
+            'error'
+          );
+        }
       });
     }
   }

@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 import { AuthService, User } from '../../../../services/auth.service';
 
@@ -93,18 +94,34 @@ export class UserListComponent implements OnInit {
     const formData = this.form.value;
 
     if (this.isEditMode() && this.editingUserId()) {
-      // Update logic
-      const updateData: any = { ...formData };
-      if (!updateData.password) delete updateData.password;
+      // Update logic: only name, email, and role (mapped to integer)
+      const rawValue = this.form.value;
+      const updateData = {
+        name: rawValue.name,
+        email: rawValue.email,
+        role: rawValue.role === 'ADMIN' ? 1 : 0
+      };
 
       this.authService.updateUser(this.editingUserId()!, updateData).subscribe({
         next: () => {
           this.loadUsers();
           this.closeModal();
+          Swal.fire({
+            icon: 'success',
+            title: 'Usuario actualizado',
+            text: 'Los datos del usuario han sido actualizados correctamente',
+            timer: 2000,
+            showConfirmButton: false
+          });
         },
         error: (err) => {
           console.error('Error updating user', err);
           this.isSubmitting.set(false);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo actualizar el usuario'
+          });
         }
       });
     } else {
@@ -113,10 +130,22 @@ export class UserListComponent implements OnInit {
         next: () => {
           this.loadUsers();
           this.closeModal();
+          Swal.fire({
+            icon: 'success',
+            title: 'Usuario creado',
+            text: 'El usuario ha sido creado correctamente',
+            timer: 2000,
+            showConfirmButton: false
+          });
         },
         error: (err) => {
           console.error('Error creating user', err);
           this.isSubmitting.set(false);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo crear el usuario'
+          });
         }
       });
     }
@@ -126,18 +155,45 @@ export class UserListComponent implements OnInit {
     this.openModal(user);
   }
 
-  deleteUser(id: number) {
+  async deleteUser(id: number) {
     if (id === this.currentUser()?.id) {
-      alert('Cannot delete your own account');
+      Swal.fire({
+        icon: 'error',
+        title: 'Acción no permitida',
+        text: 'No puedes eliminar tu propia cuenta'
+      });
       return;
     }
 
-    if (confirm('Are you sure you want to delete this user?')) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: "Esta acción no se puede deshacer",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
       this.authService.deleteUser(id).subscribe({
         next: () => {
           this.users.update(users => users.filter(u => u.id !== id));
+          Swal.fire(
+            'Eliminado',
+            'el usuario ha sido eliminado.',
+            'success'
+          );
         },
-        error: (err) => console.error('Error deleting user', err)
+        error: (err) => {
+          console.error('Error deleting user', err);
+          Swal.fire(
+            'Error',
+            'No se pudo eliminar el usuario.',
+            'error'
+          );
+        }
       });
     }
   }

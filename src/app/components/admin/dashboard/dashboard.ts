@@ -3,6 +3,7 @@ import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 import { OrderService, Order } from '../../../services/order.service';
 import { SignalrService } from '../../../services/signalr.service';
 import { Subject, takeUntil } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-dashboard',
@@ -170,10 +171,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (updatedOrder) => {
         this.loadDashboardData();
         this.updatingStatus.set(false);
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: 'success',
+          title: 'Estado actualizado correctamente'
+        });
       },
       error: (err) => {
         console.error('Error updating order status', err);
         this.updatingStatus.set(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo actualizar el estado del pedido'
+        });
       }
     });
   }
