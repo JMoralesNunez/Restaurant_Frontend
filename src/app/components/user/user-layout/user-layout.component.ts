@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -15,6 +15,15 @@ export class UserLayoutComponent {
     private router = inject(Router);
 
     user = this.authService.currentUser;
+    isMenuOpen = signal<boolean>(false);
+
+    toggleMenu() {
+        this.isMenuOpen.update(v => !v);
+    }
+
+    closeMenu() {
+        this.isMenuOpen.set(false);
+    }
 
     logout() {
         this.authService.logout();

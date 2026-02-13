@@ -1,43 +1,44 @@
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 relative">
     <!-- Products List -->
-    <div class="lg:col-span-2 space-y-10">
-        <div>
-            <h2 class="text-4xl font-black text-slate-900 tracking-tighter mb-2">Nuestro Menú</h2>
-            <p class="text-slate-500 font-medium">Cada plato preparado con pasión y los mejores ingredientes del barrio.
-            </p>
+    <div class="lg:col-span-2 space-y-8 md:space-y-12">
+        <div class="px-2">
+            <h2 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter mb-2">Nuestro Menú</h2>
+            <p class="text-slate-500 font-medium text-sm md:text-base">Cada plato preparado con pasión y los mejores
+                ingredientes del barrio.</p>
         </div>
 
         <!-- Category Tabs Section -->
         <div class="space-y-6">
-            <div class="bg-slate-50/50 p-2 rounded-[2rem] border border-slate-100/50">
-                <div class="flex flex-wrap gap-2 overflow-x-auto no-scrollbar p-1">
+            <div class="bg-slate-50/50 p-1.5 md:p-2 rounded-[1.5rem] md:rounded-[2rem] border border-slate-100/50">
+                <div class="flex flex-nowrap gap-2 overflow-x-auto no-scrollbar p-1">
                     @for (category of categories; track category.id) {
                     <button (click)="setCategory(category.id)"
                         [class]="selectedCategory() === category.id 
                             ? 'bg-white text-brand-primary shadow-xl shadow-brand-primary/10 border-transparent scale-105' 
                             : 'bg-transparent text-slate-500 hover:bg-white/50 border-transparent hover:text-slate-700'"
-                        class="flex items-center space-x-3 px-8 py-4 rounded-3xl font-bold tracking-tight transition-all duration-500 transform active:scale-95 shrink-0 border-2">
+                        class="flex items-center space-x-2 md:space-x-3 px-5 md:px-8 py-3 md:py-4 rounded-2xl md:rounded-3xl font-bold tracking-tight transition-all duration-500 transform active:scale-95 shrink-0 border-2">
                         <div [class]="selectedCategory() === category.id ? 'bg-brand-primary text-white' : 'bg-slate-200 text-slate-500'"
-                            class="p-2 rounded-xl transition-colors duration-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            class="p-1.5 md:p-2 rounded-lg md:rounded-xl transition-colors duration-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
                                 <path [attr.d]="category.iconPath" />
                             </svg>
                         </div>
-                        <span class="text-sm uppercase tracking-widest">{{category.name}}</span>
+                        <span class="text-[10px] md:text-sm uppercase tracking-widest">{{category.name}}</span>
                     </button>
                     }
                 </div>
             </div>
 
             <!-- Visual Separation & Context Title -->
-            <div class="flex items-center justify-between pt-4 px-2">
+            <div class="flex items-center justify-between pt-4 px-4">
                 <div class="flex items-baseline space-x-3">
-                    <h3 class="text-2xl font-black text-slate-900 tracking-tighter">
+                    <h3 class="text-xl md:text-2xl font-black text-slate-900 tracking-tighter">
                         {{getCategoryLabel(selectedCategory())}}</h3>
                     <span class="h-1.5 w-1.5 rounded-full bg-brand-primary"></span>
                 </div>
-                <div class="h-[1px] flex-1 bg-gradient-to-r from-slate-200 to-transparent ml-8"></div>
+                <div class="h-[1px] flex-1 bg-gradient-to-r from-slate-200 to-transparent ml-4 md:ml-8"></div>
             </div>
         </div>
 
@@ -52,19 +53,19 @@
             <p class="text-slate-400 font-bold tracking-widest uppercase text-xs">Cocinando el menú...</p>
         </div>
         } @else {
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
             @for (product of filteredProducts(); track product.id) {
-            <div class="card-premium group overflow-hidden flex flex-col bg-white">
+            <div class="card-premium group overflow-hidden flex flex-col bg-white h-full">
                 <!-- Product Image -->
-                <div class="relative h-60 overflow-hidden bg-slate-100">
+                <div class="relative h-48 md:h-60 overflow-hidden bg-slate-100">
                     @if (product.imageUrl) {
                     <img [src]="product.imageUrl" [alt]="product.name"
                         class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110">
                     } @else {
                     <div
                         class="w-full h-full bg-gradient-to-br from-slate-50 to-slate-200 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-slate-300" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 md:h-16 w-12 md:w-16 text-slate-300"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -80,23 +81,26 @@
                     </div>
                 </div>
 
-                <div class="flex-1 p-8">
+                <div class="flex-1 p-5 md:p-8 flex flex-col">
                     <div class="flex justify-between items-start mb-3">
-                        <h3 class="text-xl font-black text-slate-900 tracking-tight leading-tight">{{product.name}}</h3>
-                        <div class="flex flex-col items-end">
-                            <span class="text-2xl font-black text-brand-primary tracking-tighter">${{product.price |
-                                number:'1.2-2'}}</span>
-                        </div>
+                        <h3
+                            class="text-lg md:text-xl font-black text-slate-900 tracking-tight leading-tight flex-1 mr-2">
+                            {{product.name}}</h3>
+                        <span
+                            class="text-xl md:text-2xl font-black text-brand-primary tracking-tighter shrink-0">${{product.price
+                            |
+                            number:'1.2-2'}}</span>
                     </div>
-                    <p class="text-slate-500 text-sm leading-relaxed line-clamp-2 mb-6">{{product.description}}</p>
+                    <p class="text-slate-500 text-xs md:text-sm leading-relaxed line-clamp-2 mb-6 flex-1">
+                        {{product.description}}</p>
 
                     <button (click)="addToCart(product)"
-                        class="w-full bg-slate-900 hover:bg-brand-primary text-white px-6 py-4 rounded-2xl font-bold tracking-tight transition-all duration-300 flex items-center justify-center space-x-3 group-active:scale-95 shadow-lg hover:shadow-brand-primary/30">
+                        class="w-full bg-slate-900 hover:bg-brand-primary text-white px-6 py-3.5 md:py-4 rounded-xl md:rounded-2xl font-bold tracking-tight transition-all duration-300 flex items-center justify-center space-x-3 active:scale-95 shadow-lg hover:shadow-brand-primary/30">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor" stroke-width="2.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
-                        <span>Agregar al Pedido</span>
+                        <span class="text-sm md:text-base">Agregar</span>
                     </button>
                 </div>
             </div>
@@ -106,15 +110,17 @@
     </div>
 
     <!-- Cart Sidebar -->
-    <div class="lg:col-span-1">
-        <div class="bg-white rounded-3xl border-2 border-slate-100 shadow-2xl p-8 sticky top-32 overflow-hidden">
+    <div id="cart-section" class="lg:col-span-1">
+        <div
+            class="bg-white rounded-[2rem] md:rounded-3xl border-2 border-slate-100 shadow-2xl p-6 md:p-8 sticky top-24 lg:top-32 overflow-hidden transition-all">
             <!-- Decoration -->
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-brand-primary/5 rounded-full blur-3xl"></div>
 
-            <h2 class="text-2xl font-black text-slate-900 mb-8 flex items-center tracking-tight">
-                <div class="p-3 rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/20 mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="2.5">
+            <h2 class="text-xl md:text-2xl font-black text-slate-900 mb-6 md:mb-8 flex items-center tracking-tight">
+                <div
+                    class="p-2.5 md:p-3 rounded-xl md:rounded-2xl bg-brand-primary text-white shadow-lg shadow-brand-primary/20 mr-3 md:mr-4 flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
@@ -123,13 +129,13 @@
             </h2>
 
             @if (cart().length === 0) {
-            <div class="text-center py-16 px-4">
-                <div class="relative h-24 w-24 mx-auto mb-6">
+            <div class="text-center py-10 md:py-16 px-2">
+                <div class="relative h-20 w-20 md:h-24 md:w-24 mx-auto mb-6">
                     <div class="absolute inset-0 bg-slate-50 rounded-full animate-ping opacity-20"></div>
                     <div
                         class="relative h-full w-full bg-slate-50 rounded-full flex items-center justify-center border-2 border-slate-100/50">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-300" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 md:h-10 w-8 md:w-10 text-slate-300"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                         </svg>
@@ -142,32 +148,31 @@
                 </div>
             </div>
             } @else {
-            <div class="space-y-6 mb-8 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar">
-                @for (item of cart(); track i; let i = $index) {
+            <div class="space-y-6 mb-8 max-h-[350px] md:max-h-[450px] overflow-y-auto pr-2 no-scrollbar">
+                @for (item of cart(); track item.productId; let i = $index) {
                 <div
-                    class="group animate-fadeIn bg-slate-50/50 rounded-2xl p-4 border border-transparent hover:border-slate-100 hover:bg-white transition-all duration-300">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="flex items-start space-x-4">
-                            <div class="relative group">
-                                <div
-                                    class="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-brand-primary font-black border border-slate-100 shadow-sm group-hover:bg-brand-primary group-hover:text-white transition-colors">
-                                    {{item.quantity}}
-                                </div>
+                    class="group animate-fadeIn bg-slate-50/30 rounded-2xl p-4 border border-slate-100/50 hover:border-slate-200 hover:bg-white transition-all duration-300">
+                    <div class="flex items-start justify-between mb-3 border-b border-slate-100 pb-3">
+                        <div class="flex items-start space-x-3">
+                            <div
+                                class="h-8 w-8 bg-brand-primary text-white rounded-lg flex items-center justify-center font-black text-sm shadow-sm">
+                                {{item.quantity}}
                             </div>
                             <div>
-                                <h4 class="text-sm font-bold text-slate-800 leading-tight">{{item.productName}}</h4>
-                                <div class="flex items-center space-x-3 mt-1.5">
+                                <h4 class="text-xs font-bold text-slate-800 leading-tight line-clamp-1">
+                                    {{item.productName}}</h4>
+                                <div class="flex items-center space-x-2 mt-1.5">
                                     <button (click)="updateQuantity(i, -1)"
-                                        class="h-6 w-6 rounded-md bg-white hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-all border border-slate-100">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
+                                        class="h-5 w-5 rounded-md bg-white hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-all border border-slate-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M20 12H4" />
                                         </svg>
                                     </button>
                                     <button (click)="updateQuantity(i, 1)"
-                                        class="h-6 w-6 rounded-md bg-white hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-all border border-slate-100">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
+                                        class="h-5 w-5 rounded-md bg-white hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-all border border-slate-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-2.5 w-2.5" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 4v16m8-8H4" />
@@ -177,45 +182,63 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-black text-slate-900 tracking-tight">${{item.subtotal |
+                            <p class="text-xs font-black text-slate-900 tracking-tight">${{item.subtotal |
                                 number:'1.2-2'}}</p>
                             <button (click)="removeFromCart(i)"
-                                class="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 mt-2 transition-colors">Eliminar</button>
+                                class="text-[9px] font-black uppercase tracking-widest text-red-400 hover:text-red-500 mt-2 transition-colors">Eliminar</button>
                         </div>
                     </div>
 
-                    <!-- Comment Section -->
-                    <div class="mt-2">
-                        <textarea [(ngModel)]="item.comment" (ngModelChange)="updateComment(i, item.comment || '')"
-                            placeholder="Instrucciones especiales (ej. Sin cebolla, sabor de limonada...)"
-                            class="w-full text-[11px] p-3 rounded-xl bg-white border border-slate-100 text-slate-600 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary outline-none transition-all placeholder:text-slate-300 resize-none"
-                            rows="2"></textarea>
-                    </div>
+                    <textarea [(ngModel)]="item.comment" (ngModelChange)="updateComment(i, item.comment || '')"
+                        placeholder="Nota especial..."
+                        class="w-full text-[10px] p-2 rounded-lg bg-white/50 border border-slate-100 text-slate-600 focus:ring-1 focus:ring-brand-primary focus:border-brand-primary outline-none transition-all placeholder:text-slate-300 resize-none"
+                        rows="1"></textarea>
                 </div>
                 }
             </div>
 
-            <div class="space-y-4 pt-6 mt-6 border-t border-dashed border-slate-200 px-2">
-                <div class="flex justify-between items-center">
-                    <span class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Total a pagar</span>
-                    <span class="text-3xl font-black text-slate-900 tracking-tighter">${{cartTotal() |
+            <div class="space-y-4 pt-6 mt-6 border-t border-dashed border-slate-200">
+                <div class="flex justify-between items-center px-2">
+                    <span class="text-slate-400 font-bold uppercase tracking-widest text-[9px]">Total Pedido</span>
+                    <span class="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">${{cartTotal() |
                         number:'1.2-2'}}</span>
                 </div>
 
                 <button (click)="confirmOrder()" [disabled]="isSubmitting()"
-                    class="w-full bg-brand-primary hover:bg-brand-primary-hover text-white font-black py-5 rounded-2xl shadow-2xl shadow-brand-primary/40 transition-all active:scale-[0.98] flex items-center justify-center space-x-3 disabled:opacity-50">
+                    class="w-full bg-slate-900 hover:bg-brand-primary text-white font-black py-4 md:py-5 rounded-xl md:rounded-2xl shadow-xl hover:shadow-brand-primary/30 transition-all active:scale-[0.98] flex items-center justify-center space-x-3 disabled:opacity-50">
                     @if (!isSubmitting()) {
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
-                    <span class="text-lg">Confirmar Pedido</span>
+                    <span class="text-base md:text-lg">Confirmar Pedido</span>
                     } @else {
-                    <div class="h-6 w-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div
+                        class="h-5 w-5 md:h-6 md:w-6 border-4 border-white border-t-transparent rounded-full animate-spin">
+                    </div>
                     }
                 </button>
             </div>
             }
         </div>
     </div>
+
+    <!-- Floating Cart Button (Mobile Only) -->
+    @if (cart().length > 0) {
+    <button (click)="scrollToCart()"
+        class="lg:hidden fixed bottom-6 right-6 z-40 bg-brand-primary text-white p-4 rounded-3xl shadow-2xl shadow-brand-primary/40 flex items-center space-x-3 animate-bounce active:scale-95 transition-all">
+        <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+            <span
+                class="absolute -top-2 -right-2 bg-brand-secondary text-white text-[10px] h-5 w-5 rounded-full flex items-center justify-center font-black animate-pulse">
+                {{cart().length}}
+            </span>
+        </div>
+        <span class="font-black text-sm uppercase tracking-widest">Ver Carrito</span>
+    </button>
+    }
 </div>

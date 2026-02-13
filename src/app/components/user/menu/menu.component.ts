@@ -60,6 +60,13 @@ export class MenuComponent implements OnInit {
         this.selectedCategory.set(category);
     }
 
+    scrollToCart() {
+        const element = document.getElementById('cart-section');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
     ngOnInit() {
         this.productService.getProducts().subscribe({
             next: (data) => {

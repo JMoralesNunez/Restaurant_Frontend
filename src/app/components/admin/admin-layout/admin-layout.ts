@@ -16,10 +16,16 @@ export class AdminLayoutComponent {
   private router = inject(Router);
 
   currentUser = this.authService.currentUser;
-  isSidebarOpen = signal<boolean>(true);
+  isSidebarOpen = signal<boolean>(window.innerWidth > 1024);
 
   toggleSidebar() {
     this.isSidebarOpen.update(v => !v);
+  }
+
+  closeOnMobile() {
+    if (window.innerWidth < 1024) {
+      this.isSidebarOpen.set(false);
+    }
   }
 
   logout() {
