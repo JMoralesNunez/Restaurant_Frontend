@@ -6,35 +6,43 @@
             <p class="text-slate-500 font-medium">Controla las ventas y pedidos de <span
                     class="text-brand-primary font-bold">Sazón del Barrio</span>.</p>
         </div>
-
-        <!-- Revenue Filter -->
-        <div class="inline-flex rounded-2xl border-2 border-slate-100 bg-white p-1.5 shadow-sm">
-            <button (click)="setRevenueFilter('day')"
-                [class]="revenueFilter() === 'day' ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'text-slate-500 hover:text-slate-700'"
-                class="px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all">Día</button>
-            <button (click)="setRevenueFilter('week')"
-                [class]="revenueFilter() === 'week' ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'text-slate-500 hover:text-slate-700'"
-                class="px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all">Semana</button>
-            <button (click)="setRevenueFilter('month')"
-                [class]="revenueFilter() === 'month' ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20' : 'text-slate-500 hover:text-slate-700'"
-                class="px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all">Mes</button>
-        </div>
     </div>
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        @for (stat of stats(); track stat.title) {
-        <div class="card-premium p-8 flex items-center space-x-6 group hover:-translate-y-1 bg-white">
-            <div
-                [class]="stat.bg + ' p-5 rounded-3xl transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-sm'">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 transition-colors" [class]="stat.color"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="stat.icon" />
-                </svg>
+        @for (stat of stats(); track stat.id) {
+        <div
+            class="card-premium p-8 flex flex-col group hover:-translate-y-1 bg-white relative transition-all min-h-[220px]">
+            <!-- Top Section: Icon & Optional Filters -->
+            <div class="flex justify-between items-start mb-auto">
+                <div
+                    [class]="stat.bg + ' p-4 rounded-2xl transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-sm'">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 transition-colors" [class]="stat.color"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="stat.icon" />
+                    </svg>
+                </div>
+
+                @if (stat.id === 'revenue') {
+                <div class="flex bg-slate-50 p-1 rounded-xl border border-slate-100 shadow-inner">
+                    <button (click)="setRevenueFilter('day'); $event.stopPropagation()"
+                        [class]="revenueFilter() === 'day' ? 'bg-brand-primary text-white shadow-sm' : 'text-slate-400 hover:text-brand-primary'"
+                        class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all">Día</button>
+                    <button (click)="setRevenueFilter('week'); $event.stopPropagation()"
+                        [class]="revenueFilter() === 'week' ? 'bg-brand-primary text-white shadow-sm' : 'text-slate-400 hover:text-brand-primary'"
+                        class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all">Semana</button>
+                    <button (click)="setRevenueFilter('month'); $event.stopPropagation()"
+                        [class]="revenueFilter() === 'month' ? 'bg-brand-primary text-white shadow-sm' : 'text-slate-400 hover:text-brand-primary'"
+                        class="px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-lg transition-all">Mes</button>
+                </div>
+                }
             </div>
-            <div>
-                <p class="text-slate-400 text-xs font-black uppercase tracking-widest mb-1">{{stat.title}}</p>
-                <h3 class="text-3xl font-black text-slate-900 tracking-tighter">{{stat.value}}</h3>
+
+            <!-- Bottom Section: Data -->
+            <div class="mt-8">
+                <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">{{stat.title}}</p>
+                <h3 class="text-3xl font-black text-slate-900 tracking-tighter leading-none break-all">{{stat.value}}
+                </h3>
             </div>
         </div>
         }
